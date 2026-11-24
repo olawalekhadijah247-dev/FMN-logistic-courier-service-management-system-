@@ -26,4 +26,428 @@ nav button{border:0;background:transparent;color:#e7eff6;padding:12px 14px;borde
 nav button:hover,nav button.active{background:var(--orange);color:var(--navy)}
 .container{max-width:1200px;margin:26px auto;padding:0 20px 35px}
 .page{display:none}.page.active{display:block}
-.page-title{display:flex
+.page-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h2{color:var(--navy);margin:0 0 16px}.page-title h2{margin:0}
+.subtitle{color:var(--muted);font-size:13px;margin-top:6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px;margin-bottom:25px}
+.card{background:white;padding:20px;border-radius:12px;box-shadow:var(--shadow);border-top:4px solid var(--orange)}
+.card h3{font-size:13px;color:var(--muted);margin:0}.card p{font-size:30px;font-weight:800;color:var(--navy);margin:12px 0 0}
+.panel{background:white;padding:22px;border-radius:12px;box-shadow:var(--shadow);margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.field{margin-bottom:13px}.field.full{grid-column:1/-1}
+label{display:block;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;background:white;font:inherit;color:var(--text)}
+textarea{min-height:75px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(242,140,40,.25);border-color:var(--orange)}
+.action{border:0;background:var(--orange);color:var(--navy);font-weight:800;padding:12px 18px;border-radius:8px;cursor:pointer}
+.action:hover{background:#ffad52}.secondary{background:var(--navy);color:white}.secondary:hover{background:var(--navy2)}
+.danger{background:#fee2e2;color:#991b1b}.small{padding:7px 10px;font-size:12px}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:9px}
+table{width:100%;border-collapse:collapse;background:white;min-width:650px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
+th{background:var(--navy);color:white;font-size:12px;letter-spacing:.3px}
+tr:last-child td{border-bottom:0}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:700;background:#fff3dc;color:#8a5200}
+.status.delivered{background:#dcfce7;color:#166534}.status.transit{background:#dbeafe;color:#1d4ed8}.status.cancelled{background:#fee2e2;color:#991b1b}
+.notice{padding:12px 14px;border-radius:8px;background:#eff6ff;color:#1e40af;font-size:13px;margin:12px 0}
+.result{padding:16px;border:1px solid var(--border);border-left:4px solid var(--orange);border-radius:8px;margin-top:15px;background:#fbfdff}
+.empty{color:var(--muted);padding:18px;text-align:center;font-size:13px}
+footer{text-align:center;padding:22px;background:var(--navy);color:#d8e5f0;font-size:12px}
+.hidden{display:none!important}
+@media(max-width:650px){header{padding:18px 5%}header h1{font-size:18px}nav{padding:7px 3%}nav button{padding:10px;font-size:12px}.container{padding:0 12px}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.panel{padding:16px}}
+@media print{header,nav,footer,.no-print,#loginPage{display:none!important}body{background:white}.container{margin:0;max-width:none}.page{display:none!important}#reports{display:block!important}.panel{box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">F</div><div><h1>FMN LOGISTICS</h1><p>Courier Service Management System</p></div></div>
+  <div class="badge">ADMINISTRATOR PORTAL · DEMONSTRATION</div>
+</header>
+
+<section id="loginPage">
+  <h2>Administrator Login</h2>
+  <p class="subtitle">Sign in to manage customers, shipments and deliveries.</p>
+  <form onsubmit="login(event)">
+    <div class="field"><label for="username">Username</label><input id="username" autocomplete="username" required placeholder="Enter username"></div>
+    <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Enter password"></div>
+    <button class="action" type="submit">Login to dashboard</button>
+  </form>
+  <div class="login-note">Demonstration account: <b>admin</b> / <b>FMN2026</b><br>This is a front-end demonstration login, not production security.</div>
+</section>
+
+<div id="mainSystem" class="hidden">
+<nav class="no-print" id="mainNav">
+  <button class="active" data-page="dashboard" onclick="showPage('dashboard',this)">Dashboard</button>
+  <button data-page="customers" onclick="showPage('customers',this)">Customers</button>
+  <button data-page="couriers" onclick="showPage('couriers',this)">Couriers</button>
+  <button data-page="booking" onclick="showPage('booking',this)">Book Shipment</button>
+  <button data-page="tracking" onclick="showPage('tracking',this)">Track Parcel</button>
+  <button data-page="deliveries" onclick="showPage('deliveries',this)">Deliveries</button>
+  <button data-page="reports" onclick="showPage('reports',this)">Reports</button>
+  <button onclick="logout()">Logout</button>
+</nav>
+
+<main class="container">
+<section id="dashboard" class="page active">
+  <div class="page-title"><div><h2>Administrator Dashboard</h2><div class="subtitle">Overview of FMN Logistics operations.</div></div></div>
+  <div class="cards">
+    <div class="card"><h3>Total Shipments</h3><p id="total">0</p></div>
+    <div class="card"><h3>Pending Shipments</h3><p id="pending">0</p></div>
+    <div class="card"><h3>In Transit</h3><p id="transit">0</p></div>
+    <div class="card"><h3>Delivered</h3><p id="delivered">0</p></div>
+    <div class="card"><h3>Registered Customers</h3><p id="customerTotal">0</p></div>
+    <div class="card"><h3>Registered Couriers</h3><p id="courierTotal">0</p></div>
+  </div>
+  <div class="panel"><h2>Welcome to FMN Logistics</h2><p>Use the navigation above to register customers and couriers, book shipments, assign couriers, update delivery progress and produce reports.</p>
+    <div class="notice"><b>Prototype notice:</b> This version saves demonstration records in this browser using local storage. It is not yet connected to a shared cloud database or MySQL server.</div>
+  </div>
+</section>
+
+<section id="customers" class="page">
+  <div class="page-title"><div><h2>Customer Management</h2><div class="subtitle">Register and view customer records.</div></div></div>
+  <div class="panel">
+    <form onsubmit="addCustomer(event)">
+      <div class="grid">
+        <div class="field"><label>Customer Name</label><input id="customerName" maxlength="150" required></div>
+        <div class="field"><label>Phone Number</label><input id="customerPhone" maxlength="20" required></div>
+        <div class="field"><label>Email Address</label><input id="customerEmail" type="email" maxlength="150" required></div>
+        <div class="field"><label>Customer Address</label><input id="customerAddress" maxlength="500" required></div>
+      </div><button class="action">Register Customer</button>
+    </form>
+  </div>
+  <div class="panel"><h2>Registered Customers</h2><div id="customerList"></div></div>
+</section>
+
+<section id="couriers" class="page">
+  <div class="page-title"><div><h2>Courier Management</h2><div class="subtitle">Register couriers and manage their availability.</div></div></div>
+  <div class="panel">
+    <form onsubmit="addCourier(event)">
+      <div class="grid">
+        <div class="field"><label>Courier Name</label><input id="courierName" maxlength="150" required></div>
+        <div class="field"><label>Phone Number</label><input id="courierPhone" maxlength="20" required></div>
+        <div class="field"><label>Availability</label><select id="courierAvailability"><option>Available</option><option>Unavailable</option></select></div>
+      </div><button class="action">Register Courier</button>
+    </form>
+  </div>
+  <div class="panel"><h2>Registered Couriers</h2><div id="courierList"></div></div>
+</section>
+
+<section id="booking" class="page">
+  <div class="page-title"><div><h2>Shipment Registration</h2><div class="subtitle">Create a shipment and generate a unique tracking number.</div></div></div>
+  <div class="panel">
+    <form onsubmit="bookParcel(event)">
+      <div class="grid">
+        <div class="field"><label>Registered Customer</label><select id="bookingCustomer" required></select></div>
+        <div class="field"><label>Sender Name</label><input id="sender" maxlength="150" required></div>
+        <div class="field"><label>Receiver Name</label><input id="receiver" maxlength="150" required></div>
+        <div class="field"><label>Receiver Phone</label><input id="receiverPhone" maxlength="20" required></div>
+        <div class="field"><label>Sender Address</label><input id="senderAddress" maxlength="500" required></div>
+        <div class="field"><label>Receiver Address</label><input id="receiverAddress" maxlength="500" required></div>
+        <div class="field"><label>Origin</label><input id="origin" maxlength="100" required></div>
+        <div class="field"><label>Destination</label><input id="destination" maxlength="100" required></div>
+        <div class="field"><label>Parcel Description</label><input id="description" maxlength="500" required></div>
+        <div class="field"><label>Delivery Type</label><select id="deliveryType"><option>Standard</option><option>Express</option></select></div>
+      </div><button class="action">Register Shipment</button>
+    </form>
+    <div id="bookingResult"></div>
+  </div>
+</section>
+
+<section id="tracking" class="page">
+  <div class="page-title"><div><h2>Shipment Tracking</h2><div class="subtitle">Search using the tracking number printed at booking.</div></div></div>
+  <div class="panel">
+    <form onsubmit="trackParcel(event)">
+      <div class="field"><label>Tracking Number</label><input id="trackingNumber" required placeholder="e.g. FMN12345678"></div>
+      <button class="action">Track Shipment</button>
+    </form>
+    <div id="trackingResult"></div>
+  </div>
+</section>
+
+<section id="deliveries" class="page">
+  <div class="page-title"><div><h2>Delivery Management</h2><div class="subtitle">Assign couriers and record shipment status updates.</div></div></div>
+  <div class="panel"><div id="deliveryList"></div></div>
+</section>
+
+<section id="reports" class="page">
+  <div class="page-title"><div><h2>Shipment Reports</h2><div class="subtitle">Summary of shipment records and delivery activity.</div></div><button class="action no-print" onclick="window.print()">Print Report</button></div>
+  <div class="cards">
+    <div class="card"><h3>Total Shipments</h3><p id="reportTotal">0</p></div>
+    <div class="card"><h3>Pending</h3><p id="reportPending">0</p></div>
+    <div class="card"><h3>In Transit</h3><p id="reportTransit">0</p></div>
+    <div class="card"><h3>Delivered</h3><p id="reportDelivered">0</p></div>
+  </div>
+  <div class="panel"><h2>Shipment Activity Report</h2><div id="reportList"></div></div>
+</section>
+</main>
+</div>
+<footer>FMN Logistics &copy; 2026 · Courier Service Management System</footer>
+
+<script>
+const STORE_KEYS={customers:"fmnCustomersV2",couriers:"fmnCouriersV2",parcels:"fmnParcelsV2",updates:"fmnTrackingUpdatesV2"};
+
+function loadLegacy(key){
+  try{return JSON.parse(localStorage.getItem(key)||"[]")}catch{return []}
+}
+
+function migrateLegacyData(){
+  if(!localStorage.getItem("fmnMigrationV2")){
+    const oldCustomers=loadLegacy("fmnCustomers");
+    const oldParcels=loadLegacy("fmnParcels");
+
+    if(!localStorage.getItem(STORE_KEYS.customers)&&oldCustomers.length){
+      localStorage.setItem(STORE_KEYS.customers,JSON.stringify(oldCustomers.map((c,i)=>({
+        customer_id:c.customer_id||("CUS"+String(i+1).padStart(6,"0")),
+        name:c.name||"",phone:c.phone||"",email:c.email||"",address:c.address||""
+      }))));
+    }
+
+    if(!localStorage.getItem(STORE_KEYS.parcels)&&oldParcels.length){
+      const converted=oldParcels.map((p,i)=>({
+        shipment_id:p.shipment_id||("SHP"+String(i+1).padStart(6,"0")),
+        tracking_number:p.tracking_number||p.id||("FMN"+String(i+1).padStart(8,"0")),
+        customer_id:p.customer_id||"",courier_id:p.courier_id||null,
+        sender:p.sender||"",receiver:p.receiver||"",receiver_phone:p.receiver_phone||p.phone||"",
+        sender_address:p.sender_address||p.pickup||"",receiver_address:p.receiver_address||p.destination||"",
+        origin:p.origin||p.pickup||"",destination:p.destination||"",
+        description:p.description||"",delivery_type:p.delivery_type||p.type||"Standard",
+        status:p.status||"Pending",created_at:p.created_at||new Date().toISOString()
+      }));
+
+      localStorage.setItem(STORE_KEYS.parcels,JSON.stringify(converted));
+
+      const oldUpdates=converted.map(p=>({
+        update_id:"UPD"+Date.now()+Math.random().toString(16).slice(2,6),
+        shipment_id:p.shipment_id,status:p.status,location:p.origin,
+        note:"Migrated from previous website version",update_time:p.created_at
+      }));
+
+      localStorage.setItem(STORE_KEYS.updates,JSON.stringify(oldUpdates));
+    }
+
+    localStorage.setItem("fmnMigrationV2","yes");
+  }
+}
+
+migrateLegacyData();
+
+let customers=load("customers"),
+couriers=load("couriers"),
+parcels=load("parcels"),
+updates=load("updates");
+
+function load(k){
+  try{return JSON.parse(localStorage.getItem(STORE_KEYS[k])||"[]")}catch{return []}
+}
+
+function save(){
+  Object.keys(STORE_KEYS).forEach(k=>localStorage.setItem(STORE_KEYS[k],JSON.stringify({customers,couriers,parcels,updates}[k])))
+}
+
+function esc(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))
+}
+
+function makeId(prefix){
+  return prefix+Date.now().toString().slice(-8)+Math.floor(Math.random()*90+10)
+}
+
+function login(e){
+  e.preventDefault();
+  if(document.getElementById("username").value.trim()==="admin"&&document.getElementById("password").value==="FMN2026"){
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("mainSystem").classList.remove("hidden");
+    refresh()
+  }else{
+    alert("Incorrect username or password. Check the demonstration details below the login form.")
+  }
+}
+
+function logout(){
+  document.getElementById("mainSystem").classList.add("hidden");
+  document.getElementById("loginPage").classList.remove("hidden");
+  document.getElementById("password").value=""
+}
+
+function showPage(id,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll("nav button[data-page]").forEach(b=>b.classList.toggle("active",b===btn));
+  refresh()
+}
+
+function addCustomer(e){
+  e.preventDefault();
+  customers.push({
+    customer_id:makeId("CUS"),
+    name:val("customerName"),
+    phone:val("customerPhone"),
+    email:val("customerEmail"),
+    address:val("customerAddress")
+  });
+  save();e.target.reset();refresh();
+  alert("Customer registered successfully.")
+}
+
+function addCourier(e){
+  e.preventDefault();
+  couriers.push({
+    courier_id:makeId("COU"),
+    name:val("courierName"),
+    phone:val("courierPhone"),
+    availability:val("courierAvailability")
+  });
+  save();e.target.reset();refresh();
+  alert("Courier registered successfully.")
+}
+
+function bookParcel(e){
+  e.preventDefault();
+  if(!customers.length){
+    alert("Please register a customer before booking a shipment.");
+    showPage("customers",document.querySelector('[data-page="customers"]'));
+    return
+  }
+
+  const customer=customers.find(c=>c.customer_id===val("bookingCustomer"));
+  if(!customer){
+    alert("Please select a valid registered customer.");
+    return
+  }
+
+  const id=makeId("FMN");
+  const p={
+    shipment_id:makeId("SHP"),
+    tracking_number:id,
+    customer_id:customer.customer_id,
+    courier_id:null,
+    sender:val("sender"),
+    receiver:val("receiver"),
+    receiver_phone:val("receiverPhone"),
+    sender_address:val("senderAddress"),
+    receiver_address:val("receiverAddress"),
+    origin:val("origin"),
+    destination:val("destination"),
+    description:val("description"),
+    delivery_type:val("deliveryType"),
+    status:"Pending",
+    created_at:new Date().toISOString()
+  };
+
+  parcels.push(p);
+
+  updates.push({
+    update_id:makeId("UPD"),
+    shipment_id:p.shipment_id,
+    status:"Pending",
+    location:p.origin,
+    note:"Shipment registered",
+    update_time:new Date().toISOString()
+  });
+
+  save();e.target.reset();
+
+  document.getElementById("bookingResult").innerHTML=
+  `<div class="result"><b>Shipment registered successfully.</b><p>Your tracking number is:</p><h2>${esc(id)}</h2><p>Please keep this number to track the parcel.</p></div>`;
+
+  refresh()
+}
+
+function trackParcel(e){
+  e.preventDefault();
+  const id=val("trackingNumber").trim().toUpperCase();
+  const p=parcels.find(x=>x.tracking_number.toUpperCase()===id);
+  const box=document.getElementById("trackingResult");
+
+  if(!p){
+    box.innerHTML='<div class="result">No shipment was found for that tracking number. Please check and try again.</div>';
+    return
+  }
+
+  const history=updates.filter(u=>u.shipment_id===p.shipment_id).sort((a,b)=>new Date(b.update_time)-new Date(a.update_time));
+
+  box.innerHTML=`<div class="result"><h3>Shipment Information</h3><p><b>Tracking Number:</b> ${esc(p.tracking_number)}</p><p><b>Receiver:</b> ${esc(p.receiver)}</p><p><b>Origin:</b> ${esc(p.origin)}</p><p><b>Destination:</b> ${esc(p.destination)}</p><p><b>Parcel:</b> ${esc(p.description)}</p><p><b>Current Status:</b> ${statusBadge(p.status)}</p><h3 style="margin-top:18px">Tracking History</h3>${history.length?history.map(u=>`<p>• ${esc(new Date(u.update_time).toLocaleString())} — <b>${esc(u.status)}</b> — ${esc(u.location||"Location not supplied")} — ${esc(u.note||"")}</p>`).join(""):"<p>No tracking updates recorded.</p>"}</div>`
+}
+
+function updateStatus(shipmentId,select){
+  const p=parcels.find(x=>x.shipment_id===shipmentId);
+  if(!p)return;
+  p.status=select.value;
+  updates.push({
+    update_id:makeId("UPD"),
+    shipment_id:p.shipment_id,
+    status:p.status,
+    location:p.destination,
+    note:"Status updated by administrator",
+    update_time:new Date().toISOString()
+  });
+  save();refresh();
+  alert("Shipment status updated successfully.")
+}
+
+function assignCourier(shipmentId,select){
+  const p=parcels.find(x=>x.shipment_id===shipmentId);
+  if(!p)return;
+  p.courier_id=select.value||null;
+  save();refresh();
+  alert("Courier assignment saved.")
+}
+
+function val(id){
+  return document.getElementById(id).value
+}
+
+function statusBadge(s){
+  let cls=s==="Delivered"?"delivered":s==="In Transit"?"transit":s==="Cancelled"?"cancelled":"";
+  return `<span class="status ${cls}">${esc(s)}</span>`
+}
+
+function tableOrEmpty(headers,rows){
+  if(!rows.length)return '<div class="empty">No records available yet.</div>';
+  return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>`
+}
+
+function refresh(){
+  document.getElementById("total").textContent=parcels.length;
+  document.getElementById("pending").textContent=parcels.filter(p=>p.status==="Pending").length;
+  document.getElementById("transit").textContent=parcels.filter(p=>p.status==="In Transit").length;
+  document.getElementById("delivered").textContent=parcels.filter(p=>p.status==="Delivered").length;
+  document.getElementById("customerTotal").textContent=customers.length;
+  document.getElementById("courierTotal").textContent=couriers.length;
+
+  document.getElementById("customerList").innerHTML=tableOrEmpty(
+    ["Customer ID","Name","Phone","Email","Address"],
+    customers.map(c=>`<tr><td>${esc(c.customer_id)}</td><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${esc(c.email)}</td><td>${esc(c.address)}</td></tr>`)
+  );
+
+  document.getElementById("courierList").innerHTML=tableOrEmpty(
+    ["Courier ID","Name","Phone","Availability"],
+    couriers.map(c=>`<tr><td>${esc(c.courier_id)}</td><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${esc(c.availability)}</td></tr>`)
+  );
+
+  const cs=document.getElementById("bookingCustomer");
+  const old=cs.value;
+  cs.innerHTML='<option value="">Select a registered customer</option>'+customers.map(c=>`<option value="${esc(c.customer_id)}">${esc(c.name)} (${esc(c.customer_id)})</option>`).join("");
+  if(customers.some(c=>c.customer_id===old))cs.value=old;
+
+  document.getElementById("deliveryList").innerHTML=tableOrEmpty(
+    ["Tracking Number","Receiver","Destination","Assigned Courier","Status","Update Status"],
+    parcels.map(p=>{
+      const courier=couriers.find(c=>c.courier_id===p.courier_id);
+      return `<tr><td>${esc(p.tracking_number)}</td><td>${esc(p.receiver)}</td><td>${esc(p.destination)}</td><td><select aria-label="Assign courier" onchange="assignCourier('${esc(p.shipment_id)}',this)"><option value="">Unassigned</option>${couriers.map(c=>`<option value="${esc(c.courier_id)}" ${p.courier_id===c.courier_id?"selected":""}>${esc(c.name)}</option>`).join("")}</select>${courier?`<small>${esc(courier.phone)}</small>`:""}</td><td>${statusBadge(p.status)}</td><td><select aria-label="Update shipment status" onchange="updateStatus('${esc(p.shipment_id)}',this)">${["Pending","In Transit","Delivered","Cancelled"].map(s=>`<option ${p.status===s?"selected":""}>${s}</option>`).join("")}</select></td></tr>`
+    })
+  );
+
+  document.getElementById("reportTotal").textContent=parcels.length;
+  document.getElementById("reportPending").textContent=parcels.filter(p=>p.status==="Pending").length;
+  document.getElementById("reportTransit").textContent=parcels.filter(p=>p.status==="In Transit").length;
+  document.getElementById("reportDelivered").textContent=parcels.filter(p=>p.status==="Delivered").length;
+
+  document.getElementById("reportList").innerHTML=tableOrEmpty(
+    ["Shipment ID","Tracking Number","Customer ID","Courier ID","Sender","Receiver","Origin","Destination","Delivery Type","Status"],
+    parcels.map(p=>`<tr><td>${esc(p.shipment_id)}</td><td>${esc(p.tracking_number)}</td><td>${esc(p.customer_id)}</td><td>${esc(p.courier_id||"Not assigned")}</td><td>${esc(p.sender)}</td><td>${esc(p.receiver)}</td><td>${esc(p.origin)}</td><td>${esc(p.destination)}</td><td>${esc(p.delivery_type)}</td><td>${statusBadge(p.status)}</td></tr>`)
+  );
+}
+</script>
+</body>
+</html>

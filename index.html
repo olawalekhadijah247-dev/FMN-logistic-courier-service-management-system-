@@ -1,1 +1,29 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FMN Logistics | Courier Management System</title>
+<style>
+:root{
+  --navy:#102a43; --navy2:#163f63; --orange:#f28c28; --orange2:#d97706;
+  --bg:#f3f6fa; --white:#fff; --text:#243447; --muted:#64748b;
+  --border:#dbe3ec; --green:#16845b; --red:#c2413b; --shadow:0 8px 24px rgba(16,42,67,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(120deg,var(--navy),var(--navy2));color:white;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{width:46px;height:46px;border-radius:12px;background:var(--orange);display:grid;place-items:center;font-size:23px;font-weight:800;color:var(--navy)}
+header h1{font-size:22px;letter-spacing:1.2px;margin:0}
+header p{margin:5px 0 0;color:#d8e5f0;font-size:13px}
+.badge{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);padding:9px 13px;border-radius:20px;font-size:12px}
+#loginPage{max-width:420px;margin:55px auto;padding:28px;background:white;border-radius:15px;box-shadow:var(--shadow)}
+#loginPage h2{margin-top:0;color:var(--navy)}
+.login-note{font-size:12px;color:var(--muted);background:#f5f8fb;padding:10px;border-radius:8px;margin-top:15px}
+nav{background:var(--navy);display:flex;gap:5px;padding:8px 4%;flex-wrap:wrap}
+nav button{border:0;background:transparent;color:#e7eff6;padding:12px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+nav button:hover,nav button.active{background:var(--orange);color:var(--navy)}
+.container{max-width:1200px;margin:26px auto;padding:0 20px 35px}
+.page{display:none}.page.active{display:block}
+.page-title{display:flex
